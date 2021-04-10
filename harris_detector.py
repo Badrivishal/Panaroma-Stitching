@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import matplotlib.pyplot as plt
 
 def harris_corner_detection(image, threshold):
     # n_images = images.shape[0]
@@ -39,5 +40,9 @@ def harris_corner_detection(image, threshold):
                         cv2.circle(duplicate_image, (h,w), 3, (0, 0, 255), -1)
                         kp = cv2.KeyPoint(h, w, 5, _class_id=0)
                         kps.append(kp)
-
+    plt.imshow(duplicate_image)
+    plt.show()
+    im1 = cv2.drawKeypoints(image, kps, None)
+    plt.imshow(im1)
+    plt.show()
     return duplicate_image, kps
