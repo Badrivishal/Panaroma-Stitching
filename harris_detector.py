@@ -41,9 +41,9 @@ def harris_corner_detection(image, threshold = 50000000000):
     plt.show()
     im1 = cv2.drawKeypoints(image, kps, None)
     plt.imshow(im1)
-    result = im1
+    result = duplicate_image
     result = cv2.cvtColor(result, cv2.COLOR_RGB2BGR)
-    filename = 'Results/Harris/result'+str(j)+str(i)+'.jpg'
+    filename = 'Results/Harris/result.jpg'
     cv2.imwrite(filename, result)
     plt.show()
     return result, kps

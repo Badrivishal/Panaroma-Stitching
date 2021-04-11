@@ -104,7 +104,8 @@ def panorama(folder):
         # result = smooth(result)
         # result = sharpen(result)
         print(i)
-        filename = 'result'+str(i)+'.jpg'
+        filename = 'result'+str(i)+'.jpg'   
+        
         cv2.imwrite(filename, result)
         addresses = [filename]
         threshold1 = threshold1*0.2
