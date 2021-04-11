@@ -93,7 +93,7 @@ def panorama(folder):
     files = os.listdir(folder)
     images = [folder + '/' + i for i in files]
     addresses = [images[0]]
-    threshold2 = threshold1 = 500000000000
+    threshold2 = threshold1 = 50000000000
     for i in range(1,len(images)):
         addresses.append(images[i])
         result, H = stitching(addresses, threshold1, threshold2, i%2)
@@ -133,4 +133,4 @@ def div_conq(folder):
         threshold2 = threshold2*0.5
 
 
-div_conq('imagesSet4')
+panorama('imagesSet4')
