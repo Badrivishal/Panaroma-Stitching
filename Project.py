@@ -2,23 +2,30 @@ import numpy as np
 import cv2
 from harris_detector import *
 
-def stitch_images(images):
+def stitch_images(images, detectorType='sift'):
 
-    sift = cv2.xfeatures2d.SIFT_create()
-    bf = cv2.BFMatcher(cv2.NORM_L2, crossCheck=False)
+    if detectorType == 'sift':
+        featureDetector = cv2.xfeatures2d.SIFT_create()
+        bMatcher = cv2.BFMatcher(cv2.NORM_L2, crossCheck=False)
+    elif detectorType == 'surf':
+        featureDetector = cv2.xfeatures2d.SURF_create()
+        bMatcher = cv2.BFMatcher(cv2.NORM_L2, crossCheck=False)
+    elif detectorType == 'brisk':
+        featureDetector = cv2.BRISK_create()
+        bMatcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
+    elif detectorType == 'orb':
+        featureDetector = cv2.ORB_create()
+        bMatcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
 
-    # sift = cv2.BRISK_create()
-    # bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
 
-
-    n_images = len(images)
+    # n_images = len(images)
 
     images_dict = {}
     keypts_harris_dict = {}
     keypts_sift_dict = {}
     descptr_sift_dict = {}
 
-    for i in range(n_images):
+    for i in range(2):
         gbr_img = cv2.imread(images[i])
         rgb_img = cv2.cvtColor(gbr_img, cv2.COLOR_BGR2RGB)
 
@@ -27,7 +34,7 @@ def stitch_images(images):
         im, keypts = harris_corner_detection(gray_img, 50000000000)
         # print("KEYPOINTS", len(keypts))
         plt.imshow(im)
-        kps, desptr = sift.compute(gray_img, keypts)
+        kps, desptr = featureDetector.compute(gray_img, keypts)
         # print("SIFT KEYPOINTS", len(keypts))
         # print(np.array([kps[i]==keypts[i] for i in range(len(kps))]).sum())
         images_dict[i] = gbr_img
@@ -36,7 +43,7 @@ def stitch_images(images):
         descptr_sift_dict[i] = desptr
 
     # matches = bf.knnMatch(descptr_sift_dict[0],descptr_sift_dict[1],k=2)
-    matches = bf.match(descptr_sift_dict[0], descptr_sift_dict[1])
+    matches = bMatcher.match(descptr_sift_dict[0], descptr_sift_dict[1])
     # good = []
     # for m,n in matches:
     #     if m.distance < 0.7*n.distance:
