@@ -112,7 +112,7 @@ def div_conq(folder):
     images = [folder + '/' + i for i in files]
     addresses = []
     outputs = []
-    threshold2 = threshold1 = 10000000000
+    threshold2 = threshold1 = 8000000000
     j = 0
     while len(outputs) > 1 or len(outputs) == 0:
         for i in range(int(len(images)/2)):
@@ -131,8 +131,8 @@ def div_conq(folder):
         j += 1
         images = outputs
         outputs = []
-        threshold1 = threshold1*0.4
-        threshold2 = threshold2*0.4
+        threshold1 = threshold1*0.5
+        threshold2 = threshold2*0.5
 
 
 def sharpen(image):
