@@ -33,9 +33,6 @@ def stitching(addresses, threshold1, threshold2, typeStitch, detectorType = 'sif
     if detectorType == 'sift':
         featureDetector = cv2.xfeatures2d.SIFT_create()
         bMatcher = cv2.BFMatcher(cv2.NORM_L2, crossCheck=False)
-    elif detectorType == 'surf':
-        featureDetector = cv2.xfeatures2d.SURF_create()
-        bMatcher = cv2.BFMatcher(cv2.NORM_L2, crossCheck=False)
     elif detectorType == 'brisk':
         featureDetector = cv2.BRISK_create()
         bMatcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
@@ -96,7 +93,7 @@ def panorama(folder):
     files = os.listdir(folder)
     images = [folder + '/' + i for i in files]
     addresses = [images[0]]
-    threshold2 = threshold1 = 50000000000
+    threshold2 = threshold1 = 70000000000
     for i in range(1,len(images)):
         addresses.append(images[i])
         result, H = stitching(addresses, threshold1, threshold2, i%2)
@@ -110,6 +107,34 @@ def panorama(folder):
         threshold1 = threshold1*0.2
     return None
 
+def div_conq(folder):
+    files = os.listdir(folder)
+    images = [folder + '/' + i for i in files]
+    addresses = []
+    outputs = []
+    threshold2 = threshold1 = 10000000000
+    j = 0
+    while len(outputs) > 1 or len(outputs) == 0:
+        for i in range(int(len(images)/2)):
+            addresses.append(images.pop(0))
+            if len(images) > 0:
+                addresses.append(images.pop(0))
+            else:
+                outputs.append(addresses.pop(0))
+            print(addresses)
+            result, H = stitching(addresses, threshold1, threshold2, j%2)
+            result = cv2.cvtColor(result, cv2.COLOR_RGB2BGR)
+            filename = 'result'+str(j)+str(i)+'.jpg'
+            cv2.imwrite(filename, result)
+            outputs.append(filename)
+            addresses = []
+        j += 1
+        images = outputs
+        outputs = []
+        threshold1 = threshold1*0.4
+        threshold2 = threshold2*0.4
+
+
 def sharpen(image):
     kernel_sharpening = np.array([[-1,-1,-1], [-1, 9,-1], [-1,-1,-1]])
     sharpened = cv2.filter2D(image, -1, kernel_sharpening)
@@ -120,4 +145,4 @@ def smooth(image):
     blurred = cv2.filter2D(image, -1, kernel)
     return blurred
 
-panorama('imagesSet2')
+div_conq('imagesSet4')
