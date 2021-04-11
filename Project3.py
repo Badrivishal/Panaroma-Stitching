@@ -124,7 +124,7 @@ def div_conq(folder):
             print(addresses)
             result, H = stitching(addresses, threshold1, threshold2, j%2)
             result = cv2.cvtColor(result, cv2.COLOR_RGB2BGR)
-            filename = 'result'+str(j)+str(i)+'.jpg'
+            filename = 'Results/result'+str(j)+str(i)+'.jpg'
             cv2.imwrite(filename, result)
             outputs.append(filename)
             addresses = []
