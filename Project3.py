@@ -26,8 +26,8 @@ def stitching(addresses, threshold1, threshold2, typeStitch, detectorType = 'sif
         gray2 = cv2.flip(gray2, 1)
         gray1, gray2 = gray2, gray1
 
-    kp1 = harris_corner_detection(gray1, threshold1)
-    kp2 = harris_corner_detection(gray2, threshold2)
+    _, kp1 = harris_corner_detection(gray1, threshold1)
+    _, kp2 = harris_corner_detection(gray2, threshold2)
 
 
     if detectorType == 'sift':
@@ -93,15 +93,13 @@ def panorama(folder):
     files = os.listdir(folder)
     images = [folder + '/' + i for i in files]
     addresses = [images[0]]
-    threshold2 = threshold1 = 70000000000
+    threshold2 = threshold1 = 500000000000
     for i in range(1,len(images)):
         addresses.append(images[i])
         result, H = stitching(addresses, threshold1, threshold2, i%2)
         result = cv2.cvtColor(result, cv2.COLOR_RGB2BGR)
-        # result = smooth(result)
-        # result = sharpen(result)
         print(i)
-        filename = 'result'+str(i)+'.jpg'
+        filename = 'Results/AltPan/result'+str(i)+'.jpg'
         cv2.imwrite(filename, result)
         addresses = [filename]
         threshold1 = threshold1*0.2
@@ -124,7 +122,7 @@ def div_conq(folder):
             print(addresses)
             result, H = stitching(addresses, threshold1, threshold2, j%2)
             result = cv2.cvtColor(result, cv2.COLOR_RGB2BGR)
-            filename = 'Results/result'+str(j)+str(i)+'.jpg'
+            filename = 'Results/DivConq/result'+str(j)+str(i)+'.jpg'
             cv2.imwrite(filename, result)
             outputs.append(filename)
             addresses = []
@@ -134,15 +132,5 @@ def div_conq(folder):
         threshold1 = threshold1*0.5
         threshold2 = threshold2*0.5
 
-
-def sharpen(image):
-    kernel_sharpening = np.array([[-1,-1,-1], [-1, 9,-1], [-1,-1,-1]])
-    sharpened = cv2.filter2D(image, -1, kernel_sharpening)
-    return sharpened
-
-def smooth(image):
-    kernel = np.ones((3, 3), np.float32) / 9
-    blurred = cv2.filter2D(image, -1, kernel)
-    return blurred
 
 div_conq('imagesSet4')

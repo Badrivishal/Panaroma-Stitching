@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 
-def harris_corner_detection(image, threshold):
+def harris_corner_detection(image, threshold = 50000000000):
     Ix = cv2.Sobel(image, cv2.CV_32F, 1, 0, ksize=3)
     Iy = cv2.Sobel(image, cv2.CV_32F, 0, 1, ksize=3)
     Ixx = Ix*Ix
@@ -41,5 +41,9 @@ def harris_corner_detection(image, threshold):
     plt.show()
     im1 = cv2.drawKeypoints(image, kps, None)
     plt.imshow(im1)
+    result = im1
+    result = cv2.cvtColor(result, cv2.COLOR_RGB2BGR)
+    filename = 'Results/Harris/result'+str(j)+str(i)+'.jpg'
+    cv2.imwrite(filename, result)
     plt.show()
-    return kps
+    return result, kps
