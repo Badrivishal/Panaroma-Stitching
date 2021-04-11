@@ -20,7 +20,7 @@ import os
 # gray2 = cv.cvtColor(image2, cv.COLOR_RGB2GRAY)
 # plt.imshow(image2)
 
-def stitching(addresses, threshold):
+def stitching(addresses, threshold1, threshold2):
 
     address1, address2 = addresses
     image1 = cv.imread(address1)
@@ -31,11 +31,12 @@ def stitching(addresses, threshold):
     image2 = cv.cvtColor(image2, cv.COLOR_BGR2RGB)
     gray2 = cv.cvtColor(image2, cv.COLOR_RGB2GRAY)
 
-    
-    im, lst1 = harris_corner_detection(gray1, threshold)
-    im, lst2 = harris_corner_detection(gray2, threshold)
+    # harris_in1 = gray1[-image2.shape[0]:, :]
+    im, lst1 = harris_corner_detection(gray1, threshold1)
+    im, lst2 = harris_corner_detection(gray2, threshold2)
 
-    sift = cv.BRISK_create()
+    # sift = cv.BRISK_create()
+    sift = cv.ORB_create()
 
 
     kp1, desc1 = sift.compute(gray1, lst1)
@@ -107,16 +108,16 @@ def panorama(folder):
     files = os.listdir(folder)
     images = [folder + '/' + i for i in files]
     addresses = [images[0]]
-    threshold = 50000000000
+    threshold2 = threshold1 = 50000000000
     for i in range(1,len(images)):
         addresses.append(images[i])
-        result, H = stitching(addresses, threshold)
+        result, H = stitching(addresses, threshold1, threshold2)
         result = cv2.cvtColor(result, cv2.COLOR_RGB2BGR)
         print(i)
         filename = 'result'+str(i)+'.jpg'
         cv2.imwrite(filename, result)
         addresses = [filename]
-        threshold = threshold*1.5
+        threshold1 = threshold1*0.2
     return None
 
-panorama('imagesSet2')
+panorama('imagesSet3')
